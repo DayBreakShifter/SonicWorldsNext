@@ -59,7 +59,7 @@ var enemyCounter = 0
 # 8 Jump
 # 9 Jump release velocity
 
-enum CHARACTERS {SONIC, TAILS, KNUCKLES, AMY}
+enum CHARACTERS {SONIC, TAILS, KNUCKLES, AMY, XANDER}
 var character = CHARACTERS.SONIC
 
 # 0 = Sonic, 1 = Tails, 2 = Knuckles, 3 = Shoes, 4 = Super Sonic
@@ -317,7 +317,9 @@ func _ready():
 				playerPal.set_shader_parameter("row",0)
 				playerPal.set_shader_parameter("paletteTexture",load("res://Graphics/Palettes/SuperAmy.png"))
 				
-			#CHARACTERS.AMY:
+			#CHARACTERS.SHADOW:
+			#CHARACTERS.CREAM:
+			#CHARACTERS.XANDER:
 				
 	
 	
@@ -494,12 +496,12 @@ func _process(delta):
 	# set the sprite to match the sprite rotation variable if it's in the rotatable Sprites list
 	if (rotatableSprites.has(animator.current_animation)):
 		# check if player rotation is greater then 45 degrees or current angle doesn't match the gravity's angle or not on the floor
-		if abs(spriteRotation-90) >= 32 or rotation != gravityAngle or !ground:
-			sprite.rotation = deg_to_rad(snapped(spriteRotation,45)-90)-rotation-gravityAngle
-		else:
-			sprite.rotation = -rotation-gravityAngle
+		#if abs(spriteRotation-90) >= 32 or rotation != gravityAngle or !ground:
+		#	sprite.rotation = deg_to_rad(snapped(spriteRotation,45)-90)-rotation-gravityAngle
+		#else:
+			#sprite.rotation = -rotation-gravityAngle
 		# uncomment this next line out for smooth rotation (you should remove the above line too)
-		#sprite.rotation = deg_to_rad(spriteRotation-90)-rotation-gravityAngle
+		sprite.rotation = deg_to_rad(spriteRotation-90)-rotation-gravityAngle
 	else:
 		sprite.rotation = -rotation+gravityAngle
 
@@ -543,6 +545,21 @@ func _process(delta):
 				isSuper = false
 				superAnimator.play("PowerDown")
 				switch_physics()
+				# Update Discord Player Icons
+				match(Global.PlayerChar1):
+					Global.CHARACTERS.SONIC:
+						discord_sdk.small_image = "charhead-sonic"
+					Global.CHARACTERS.TAILS:
+						discord_sdk.small_image = "charhead-tails"
+					Global.CHARACTERS.KNUCKLES:
+						discord_sdk.small_image = "charhead-knuckles"
+					Global.CHARACTERS.AMY:
+						discord_sdk.small_image = "charhead-amy"
+					#Global.CHARACTERS.CREAM:
+					#	discord_sdk.small_image = "charhead-cream"
+					Global.CHARACTERS.XANDER:
+						discord_sdk.small_image = "charhead-xander"
+				discord_sdk.refresh()
 			if Global.currentTheme == 0 and Global.effectTheme.is_playing():
 				Global.music.play()
 				Global.effectTheme.stop()
@@ -1093,6 +1110,22 @@ func kill():
 		if is_instance_valid(superAnimator) and isSuper:
 			superAnimator.play("PowerDown")
 			isSuper = false
+			
+			# Update Discord Player Icons
+			match(Global.PlayerChar1):
+				Global.CHARACTERS.SONIC:
+					discord_sdk.small_image = "charhead-sonic"
+				Global.CHARACTERS.TAILS:
+					discord_sdk.small_image = "charhead-tails"
+				Global.CHARACTERS.KNUCKLES:
+					discord_sdk.small_image = "charhead-knuckles"
+				Global.CHARACTERS.AMY:
+					discord_sdk.small_image = "charhead-amy"
+				#Global.CHARACTERS.CREAM:
+				#	discord_sdk.small_image = "charhead-cream"
+				Global.CHARACTERS.XANDER:
+					discord_sdk.small_image = "charhead-xander"
+			discord_sdk.refresh()
 		# stop special music
 		if playerControl == 1 and Global.effectTheme.is_playing():
 			Global.music.play()

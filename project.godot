@@ -21,14 +21,16 @@ config/icon="res://icon.png"
 
 Global="*res://Scripts/Global/Global.gd"
 GlobalFunctions="*res://Scripts/Global/GlobalFunctions.gd"
+DiscordSDKLoader="*res://addons/discord-sdk-gd/nodes/core_updater.gd"
 
 [debug]
 
 shapes/collision/shape_color=Color(1, 1, 1, 0.501961)
+gdscript/custom_font="res://Graphics/Fonts/small_font.png"
 
 [display]
 
-window/size/viewport_width=320
+window/size/viewport_width=400
 window/size/viewport_height=224
 window/stretch/mode="viewport"
 
@@ -36,9 +38,14 @@ window/stretch/mode="viewport"
 
 project/assembly_name="Sonic Worlds Next"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/discord-sdk-gd/plugin.cfg")
+
 [gui]
 
 theme/custom_font="res://Graphics/Fonts/small_font.png"
+theme/size/borderless=false
 
 [importer_defaults]
 

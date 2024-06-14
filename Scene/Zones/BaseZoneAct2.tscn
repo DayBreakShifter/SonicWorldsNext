@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bjavywoj00j1j"]
+[gd_scene load_steps=32 format=3 uid="uid://bjavywoj00j1j"]
 
 [ext_resource type="Script" path="res://Scripts/Level/Level.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://qs5dmtxxf1w1" path="res://Scene/Presentation/Title.tscn" id="2_l4fq6"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://cioq5saowvqxj" path="res://Entities/MainObjects/Player.tscn" id="18"]
 [ext_resource type="Script" path="res://Scripts/Objects/CollapsePlatform.gd" id="21_x7n5b"]
 [ext_resource type="PackedScene" uid="uid://urapmknlu0s5" path="res://Entities/Gimmicks/HorizontalBar.tscn" id="22_ethvu"]
+[ext_resource type="Script" path="res://Scripts/Misc/AltSpawn.gd" id="22_px6ec"]
 [ext_resource type="PackedScene" uid="uid://4q0hpddgto2k" path="res://Entities/Gimmicks/Spring.tscn" id="23_n1r7l"]
 [ext_resource type="Texture2D" uid="uid://b4cw5q2u4jyb8" path="res://Graphics/Gimmicks/HorizontalBarAlt.png" id="24_ipqgj"]
 [ext_resource type="Texture2D" uid="uid://bemwlrblbgn23" path="res://Graphics/Backgrounds/WorldsBackground.png" id="25"]
@@ -84,11 +85,12 @@ animal1 = 2
 animal2 = 3
 defaultLeftBoundry = 0
 defaultTopBoundry = 0
-defaultRightBoundry = 3600
+defaultRightBoundry = 4000
 defaultBottomBoundry = 2048
 metadata/_edit_vertical_guides_ = [3600.0]
 
 [node name="HUD" parent="." instance=ExtResource("4")]
+zoneName = "Base"
 act = 2
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
@@ -116,7 +118,7 @@ region_enabled = true
 region_rect = Rect2(0, 0, 512, 512)
 
 [node name="Player" parent="." instance=ExtResource("18")]
-position = Vector2(69, 734)
+position = Vector2(69, 748)
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("6_1cyhs")
@@ -155,7 +157,7 @@ layer_4/tile_data = PackedInt32Array()
 [node name="Entities" type="Node" parent="."]
 
 [node name="GoalPost" parent="Entities" instance=ExtResource("34")]
-position = Vector2(3280, 416)
+position = Vector2(3408, 416)
 
 [node name="Rings" type="Node" parent="Entities"]
 
@@ -341,6 +343,14 @@ layer_0/tile_data = PackedInt32Array(-327688, 131072, 0, -262152, 131077, 1, -19
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Entities/AdvancedPlatform"]
 position = Vector2(-32, -92)
 shape = SubResource("RectangleShape2D_n7iqd")
+
+[node name="GoalPost2" parent="Entities" instance=ExtResource("34")]
+position = Vector2(2304, 1055)
+
+[node name="AltSpawn" type="Node2D" parent="Entities"]
+position = Vector2(1648, 848)
+script = ExtResource("22_px6ec")
+currentCharacter = 3
 
 [node name="HorizontalBar" parent="." instance=ExtResource("22_ethvu")]
 position = Vector2(864, 235)

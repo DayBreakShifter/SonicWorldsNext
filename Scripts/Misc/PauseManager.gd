@@ -91,6 +91,7 @@ func _input(event):
 				if event.is_action_pressed("gm_left") or event.is_action_pressed("gm_right"):
 					Global.zoomSize = clamp(Global.zoomSize+inputDir,zoomClamp[0],zoomClamp[1])
 					get_window().set_size(get_viewport().get_visible_rect().size*Global.zoomSize)
+					Global.centerScreen()
 		$PauseMenu/VBoxContainer.get_child(option+1).get_child(0).text = update_text(option+1)
 	
 	
@@ -111,7 +112,24 @@ func _input(event):
 			MENUS.OPTIONS: # options menu
 				match(option): # Options
 					3: # full screen
-						get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED
+						var screenSize = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
+						if Global.fullScreen == false:
+							Global.fullScreen = true
+							get_window().set_size(screenSize)
+							get_window().position = Vector2(0, 0)
+							get_window().borderless = true
+						else:
+							Global.fullScreen = false
+							get_window().set_size(get_viewport().get_visible_rect().size*Global.zoomSize)
+							get_window().borderless = false
+							Global.centerScreen()
+						Global.save_settings()
+						
+						#get_window().mode = Window.MODE_FULLSCREEN if (!((get_window().mode == Window.MODE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED
+						#if get_window().mode == Window.MODE_FULLSCREEN:
+						#	get_window().borderless = true
+						#else:
+						#	get_window().borderless = false
 						$PauseMenu/VBoxContainer.get_child(option+1).get_child(0).text = update_text(option+1)
 					4: # control menu
 						Global.save_settings()
@@ -192,6 +210,6 @@ func update_text(textRow = 0):
 		3: # Scale
 			return "scale x"+str(Global.zoomSize)
 		4: # Full screen
-			return "full screen "+onOff[int(((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)))]
+			return "full screen "+onOff[int(Global.fullScreen)] #[int(((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)))]
 		_: # Default
 			return menusText[menu][textRow]

@@ -54,6 +54,9 @@ var soundChannel = AudioStreamPlayer.new()
 var score = 0
 var lives = 3
 var continues = 0
+# special stage values
+var specialStatus = 0 # 0 = neutral, 1 = win, 2 = lose
+var inSpecialStage = false
 # emeralds use bitwise flag operations, the equivelent for 7 emeralds would be 128
 var emeralds = 0
 # emerald bit flags
@@ -69,7 +72,7 @@ var setWaterLevel = 0 # used by other nodes to change the water level
 var waterScrollSpeed = 64 # used by other nodes for how fast to move the water to different levels
 
 # characters (if you want more you should add one here, see the player script too for more settings)
-enum CHARACTERS {NONE,SONIC,TAILS,KNUCKLES,AMY}
+enum CHARACTERS {NONE,SONIC,TAILS,KNUCKLES,AMY,SHADOW,CREAM,XANDER}
 var PlayerChar1 = CHARACTERS.SONIC
 var PlayerChar2 = CHARACTERS.TAILS
 
@@ -78,6 +81,8 @@ var hardBorderLeft   = -100000000
 var hardBorderRight  =  100000000
 var hardBorderTop    = -100000000
 var hardBorderBottom =  100000000
+
+var scoreRanks = [90000, 80000, 70000, 60000, 50000]
 
 # Animal spawn type reference, see the level script for more information on the types
 var animals = [0,1]
@@ -94,6 +99,13 @@ var nodeMemory = []
 
 # Game settings
 var zoomSize = 1
+var fullScreen = false
+
+func centerScreen():
+	var screenSize = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
+	var windowLeft = ((screenSize[0] / 2.0) - (get_window().size[0] / 2.0))
+	var windowTop = ((screenSize[1] / 2.0) - (get_window().size[1] / 2.0))
+	get_window().position = Vector2(windowLeft, windowTop)
 
 # Hazard type references
 enum HAZARDS {NORMAL, FIRE, ELEC, WATER}
@@ -102,6 +114,8 @@ enum HAZARDS {NORMAL, FIRE, ELEC, WATER}
 var is_main_loaded = false
 
 func _ready():
+	# discord rpc app id
+	discord_sdk.app_id = 1173526281091043360
 	# set sound settings
 	add_child(soundChannel)
 	soundChannel.bus = "SFX"

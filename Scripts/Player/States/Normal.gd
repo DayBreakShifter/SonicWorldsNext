@@ -12,10 +12,11 @@ var actionPressed = false
 # you'll want to increase this for the number of playable characters
 var playerIdles = [
 # SONIC
-["idle1","idle2","idle2","idle2","idle2","idle3",
-"idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4",
-"idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4",
-"idle5"],
+["idle1","idle2","idle1","idle3","idle4"],
+#["idle1","idle2","idle2","idle2","idle2","idle3",
+#"idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4",
+#"idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4","idle4",
+#"idle5"],
 # Tails
 ["idle1"], # Note: Tails idle loops on idle one, to add more idles make sure to disable his idle1 loop
 # Knuckles

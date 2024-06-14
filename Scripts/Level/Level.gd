@@ -17,6 +17,13 @@ extends Node2D
 @export var setDefaultBottom = true
 @export var defaultBottomBoundry = 100000000
 
+@export_subgroup("Result Ranks")
+@export var scoreForRankS = 12000
+@export var scoreForRankA = 9000
+@export var scoreForRankB = 6000
+@export var scoreForRankC = 3000
+@export var scoreForRankD = 1000
+
 # was loaded is used for room loading, this can prevent overwriting global information, see Global.gd for more information on scene loading
 var wasLoaded = false
 
@@ -36,6 +43,28 @@ func _ready():
 		Global.hardBorderTop    = defaultTopBoundry
 	if setDefaultBottom:
 		Global.hardBorderBottom  = defaultBottomBoundry
+	
+	# Update Discord Player Icons
+	match(Global.PlayerChar1):
+		Global.CHARACTERS.SONIC:
+			discord_sdk.small_image = "charhead-sonic"
+			discord_sdk.small_image_text = "Playing as Sonic"
+		Global.CHARACTERS.TAILS:
+			discord_sdk.small_image = "charhead-tails"
+			discord_sdk.small_image_text = "Playing as Tails"
+		Global.CHARACTERS.KNUCKLES:
+			discord_sdk.small_image = "charhead-knuckles"
+			discord_sdk.small_image_text = "Playing as Knuckles"
+		Global.CHARACTERS.AMY:
+			discord_sdk.small_image = "charhead-amy"
+			discord_sdk.small_image_text = "Playing as Amy Rose"
+		#Global.CHARACTERS.CREAM:
+		#	discord_sdk.small_image = "charhead-cream"
+			discord_sdk.small_image_text = "Playing as Cream"
+		Global.CHARACTERS.XANDER:
+			discord_sdk.small_image = "charhead-xander"
+			discord_sdk.small_image_text = "Playing as Xander"
+	discord_sdk.refresh()
 	
 	level_reset_data(false)
 	
@@ -61,6 +90,8 @@ func level_reset_data(playCard = true):
 		Global.main.sceneCanPause = true
 	# set animals
 	Global.animals = [animal1,animal2]
+	# set rank score
+	Global.scoreRanks = [scoreForRankS, scoreForRankA, scoreForRankB, scoreForRankC, scoreForRankD]
 	# if global hud and play card, run hud ready script
 	if playCard and is_instance_valid(Global.hud):
 		$HUD._ready()

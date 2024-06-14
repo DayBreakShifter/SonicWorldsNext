@@ -101,6 +101,7 @@ func _on_Hitbox_body_entered(body):
 	if !active and body.playerControl == 1 and visible:
 		# if 7 emeraldsn haven't been collected, go to special stage
 		if Global.emeralds < 127:
+			Global.inSpecialStage = true
 			active = true
 			body.visible = false
 			body.movement = Vector2.ZERO

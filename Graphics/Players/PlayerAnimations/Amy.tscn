@@ -1166,7 +1166,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [8.0, 2.0]
+"values": [8.0, 5.0]
 }
 
 [sub_resource type="Animation" id="Animation_t7log"]
@@ -1182,7 +1182,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [8.0, 1.0]
+"values": [4.0, 1.0]
 }
 
 [sub_resource type="Animation" id="Animation_y01gt"]
@@ -1223,13 +1223,14 @@ texture = ExtResource("2_vki44")
 offset = Vector2(0, -5)
 hframes = 16
 vframes = 18
+frame = 2
 
 [node name="DashDust" type="AnimatedSprite2D" parent="Sprite2D"]
 visible = false
 position = Vector2(0, -4)
 sprite_frames = SubResource("96")
 autoplay = "default"
-frame = 3
+frame_progress = 0.816803
 offset = Vector2(-9, -4)
 
 [node name="CrouchBox" type="CollisionShape2D" parent="."]

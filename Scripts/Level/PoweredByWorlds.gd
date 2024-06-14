@@ -6,6 +6,8 @@ extends Node2D
 var alreadyChanged = false
 
 func _ready():
+	# center the screen in case the scale isn't 1x
+	Global.centerScreen()
 	# delay so game can start
 	await get_tree().create_timer(1).timeout
 	# play title if the scene isn't already skipping

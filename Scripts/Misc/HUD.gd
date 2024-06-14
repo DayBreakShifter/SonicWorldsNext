@@ -11,9 +11,12 @@ extends CanvasLayer
 
 # play level card, if true will play the level card animator and use the zone name and zone text with the act
 @export var playLevelCard = true
-@export var zoneName = "Base"
+@export var zoneName = ""
 @export var zone = "Zone"
 @export var act = 1
+
+# discord stuff
+@export var discordImage = "special_cyan"
 
 # used for flashing ui elements (rings, time)
 var flashTimer = 0
@@ -28,12 +31,19 @@ var ringBonus = 0
 # gameOver is used to initialize the game over animation sequence, note: this is for animation, if you want to use the game over status it's in global
 var gameOver = false
 
+# previous score before tally, used for rank
+var rankScore  = 0 # Final Score
+var levelScore = 0 + Global.score
+var paletteRankS = preload("res://Shaders/RankRainbow.tres")
+
 # signal that gets emited once the stage tally is over
 signal tally_clear
 
 # character name strings, used for "[player] has cleared", this matches the players character ID so you'll want to add the characters name in here matching the ID if you want more characters
 # see Global.PlayerChar1
-var characterNames = ["sonic","tails","knuckles","amy"]
+var characterNames = ["SONIC","TAILS","KNUCKLES","AMY","SHADOW","CREAM","XANDER"]
+var characterString = "SONIC THE HEDGEHOG  "
+var paletteTitle = preload("res://Shaders/TitleCard.tres")
 
 func _ready():
 	# error prevention
@@ -43,6 +53,25 @@ func _ready():
 	# stop timer from counting during stage start up and set global hud to self
 	Global.timerActive = false
 	Global.hud = self
+	
+	# Palettes
+	paletteRankS.set_shader_parameter("amount",16)
+	paletteRankS.set_shader_parameter("palRows",16)
+	paletteRankS.set_shader_parameter("row",0)
+	paletteRankS.set_shader_parameter("paletteTexture",load("res://Graphics/Palettes/RankSRainbow.png"))
+	
+	paletteTitle.set_shader_parameter("amount",8)
+	paletteTitle.set_shader_parameter("palRows",8)
+	paletteTitle.set_shader_parameter("row",Global.PlayerChar1)
+	paletteTitle.set_shader_parameter("paletteTexture",load("res://Graphics/Palettes/TitleCardEdge.png"))
+	
+	# Update Discord
+	discord_sdk.large_image = discordImage
+	discord_sdk.details = zoneName + " " + zone + ", Act " + str(act)
+	
+	# refresh discord
+	discord_sdk.refresh()
+	
 	# Set character Icon
 	$LifeCounter/Icon.frame = Global.PlayerChar1-1
 	
@@ -51,12 +80,36 @@ func _ready():
 		# set level card
 		$LevelCard.visible = true
 		# set level name strings
-		$LevelCard/Banner/LevelName.text = zoneName
-		$LevelCard/Banner/Zone.text = zone
+		#$LevelCard/Banner/LevelName.text = zoneName
+		#$LevelCard/Banner/Zone.text = zone
+		$LevelCard/StageName/LevelName.text = zoneName
+		$LevelCard/StageName/Zone.text = zone
 		# set act graphic
-		$LevelCard/Banner/Act.frame = act-1
+		#$LevelCard/Banner/Act.frame = act-1
+		$LevelCard/Act.frame = act-1
 		# make visible if act isn't 0 (0 will just be zone)
-		$LevelCard/Banner/Act.visible = (act > 0)
+		#$LevelCard/Banner/Act.visible = (act > 0)
+		$LevelCard/Act.visible = (act > 0)
+		# set character name
+		if Global.PlayerChar2 == Global.CHARACTERS.NONE:
+			match(Global.PlayerChar1):
+				Global.CHARACTERS.SONIC:
+					characterString = "SONIC THE HEDGEHOG  "
+				Global.CHARACTERS.TAILS:
+					characterString = "MILES TAILS PROWER  "
+				Global.CHARACTERS.KNUCKLES:
+					characterString = "KNUCKLES THE ECHIDNA  "
+				Global.CHARACTERS.AMY:
+					characterString = "AMY ROSE  AMY ROSE  "
+				Global.CHARACTERS.SHADOW:
+					characterString = "SHADOW THE HEDGEHOG  "
+				Global.CHARACTERS.CREAM:
+					characterString = "CREAM THE RABBIT  "
+				Global.CHARACTERS.XANDER:
+					characterString = "XANDER THE DRAGON  "
+		else:
+			characterString = characterNames[Global.PlayerChar1-1] + " AND " + characterNames[Global.PlayerChar2-1] + "  "
+		$LevelCard/CharaName/CharaName.text = characterString + characterString + characterString + characterString + characterString + characterString + characterString + characterString
 		# make sure level card isn't paused so it can keep playing
 		$LevelCard/CardPlayer.process_mode = PROCESS_MODE_ALWAYS
 		# temporarily let music play during pauses
@@ -98,9 +151,10 @@ func _process(delta):
 	# clamp time so that it won't go to 10 minutes
 	var timeClamp = min(Global.levelTime,Global.maxTime-1)
 	# set time text, format it to have a leadin 0 so that it's always 2 digits
-	timeText.text = "%2d" % floor(timeClamp/60) + ":" + str(fmod(floor(timeClamp),60)).pad_zeros(2)
+	#timeText.text = "%2d" % floor(timeClamp/60) + ":" + str(fmod(floor(timeClamp),60)).pad_zeros(2)
 	# uncomment below (and remove above line) for mili seconds
 	#timeText.text = "%2d" % floor(timeClamp/60) + ":" + str(fmod(floor(timeClamp),60)).pad_zeros(2) + ":" + str(fmod(floor(timeClamp*100),100)).pad_zeros(2)
+	timeText.text = str(fmod(floor(timeClamp/60),60)) + ":" + str(fmod(floor(timeClamp),60)).pad_zeros(2) + ":" + str(fmod(floor(timeClamp*100),100)).pad_zeros(2)
 	
 	# cehck that there's player, if there is then track the focus players ring count
 	if (Global.players.size() > 0):
@@ -172,6 +226,7 @@ func _process(delta):
 		# initialize stage clear sequence
 		if !isStageEnding:
 			isStageEnding = true
+			#levelScore = scoreText
 			
 			# show level clear elements
 			$LevelClear.visible = true
@@ -192,6 +247,7 @@ func _process(delta):
 			[60,5000],
 			[45,10000],
 			[30,50000],
+			[0,0]
 			]
 			# loop through the bonus table, if current time is less then the first value then set it to that bonus
 			# you'll want to make sure the order of the table goes down in time and up in score otherwise it could cause some weirdness
@@ -206,6 +262,29 @@ func _process(delta):
 			# start the level counter tally (see _on_CounterCount_timeout)
 			$LevelClear/CounterCount.start()
 			await self.tally_clear
+			# rank result
+			$LevelClear/CounterWait.start(0.5)
+			await $LevelClear/CounterWait.timeout
+			
+			rankScore = scoreText.text.to_int()
+			
+			$LevelClear/CounterWait.start(0.5)
+			await $LevelClear/CounterWait.timeout
+			if (rankScore - levelScore) > Global.scoreRanks[0]: # S Rank
+				$LevelClear/Rank/Ranks/RankS/Rainbow.play("Rainbow")
+				$LevelClear/Rank/RankAnimations.play("RankS")
+			elif (rankScore - levelScore) > Global.scoreRanks[1]: # A Rank
+				$LevelClear/Rank/RankAnimations.play("RankA")
+			elif (rankScore - levelScore) > Global.scoreRanks[2]: # B Rank
+				$LevelClear/Rank/RankAnimations.play("RankB")
+			elif (rankScore - levelScore) > Global.scoreRanks[3]: # C Rank
+				$LevelClear/Rank/RankAnimations.play("RankC")
+			elif (rankScore - levelScore) > Global.scoreRanks[4]: # D Rank
+				$LevelClear/Rank/RankAnimations.play("RankD")
+			else:                                                 # E Rank
+				$LevelClear/Rank/RankAnimations.play("RankE")
+			await $LevelClear/Rank/RankAnimations.animation_finished
+			
 			# wait 2 seconds (reuse timer)
 			$LevelClear/CounterWait.start(2)
 			await $LevelClear/CounterWait.timeout

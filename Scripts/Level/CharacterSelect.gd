@@ -6,9 +6,9 @@ extends Node2D
 var selected = false
 
 # character labels, the amount of labels in here determines the total amount of options, see the set character option at the end for settings
-var characterLabels = ["Sonic and Tails", "Sonic", "Tails", "Knuckles", "Amy"]
+var characterLabels = ["Sonic and Tails", "Sonic the Hedgehog", "Miles \"Tails\" Prower", "Knuckles the Echidna", "Amy Rose", "Xander the Dragon"]
 # level labels, the amount of labels in here determines the total amount of options, see set level option at the end for settings
-var levelLabels = ["Base Zone Act 1", "Base Zone Act 2"]#, "Chunk Zone Act 1"]
+var levelLabels = ["Base Zone Act 1", "Base Zone Act 2", "Chunk Zone Act 1"]
 # character id lines up with characterLabels
 var characterID = 0
 # level id lines up with levelLabels
@@ -40,17 +40,21 @@ func _input(event):
 		match(characterID):
 			0: # Sonic and Tails
 				$UI/Labels/CharacterOrigin/Sonic.visible = true
+				$UI/Labels/CharacterOrigin/Sonic.position.x = 13
 				$UI/Labels/CharacterOrigin/Tails.visible = true
+				$UI/Labels/CharacterOrigin/Tails.position.x = -9
 				$UI/Labels/CharacterOrigin/Knuckles.visible = false
 				$UI/Labels/CharacterOrigin/Amy.visible = false
 			1: # Sonic
 				$UI/Labels/CharacterOrigin/Sonic.visible = true
+				$UI/Labels/CharacterOrigin/Sonic.position.x = 1
 				$UI/Labels/CharacterOrigin/Tails.visible = false
 				$UI/Labels/CharacterOrigin/Knuckles.visible = false
 				$UI/Labels/CharacterOrigin/Amy.visible = false
 			2: # Tails
 				$UI/Labels/CharacterOrigin/Sonic.visible = false
 				$UI/Labels/CharacterOrigin/Tails.visible = true
+				$UI/Labels/CharacterOrigin/Tails.position.x = 3
 				$UI/Labels/CharacterOrigin/Knuckles.visible = false
 				$UI/Labels/CharacterOrigin/Amy.visible = false
 			3: # Knuckles
@@ -63,6 +67,11 @@ func _input(event):
 				$UI/Labels/CharacterOrigin/Tails.visible = false
 				$UI/Labels/CharacterOrigin/Knuckles.visible = false
 				$UI/Labels/CharacterOrigin/Amy.visible = true
+			5: # Xander
+				$UI/Labels/CharacterOrigin/Sonic.visible = false
+				$UI/Labels/CharacterOrigin/Tails.visible = false
+				$UI/Labels/CharacterOrigin/Knuckles.visible = false
+				$UI/Labels/CharacterOrigin/Amy.visible = false
 		
 		# finish character select if start is pressed
 		if event.is_action_pressed("gm_pause"):
@@ -70,19 +79,31 @@ func _input(event):
 			# set player 2 to none to prevent redundant code
 			Global.PlayerChar2 = Global.CHARACTERS.NONE
 			
-			# set the character
+			# set the character and update discord
 			match(characterID):
 				0: # Sonic and Tails
 					Global.PlayerChar1 = Global.CHARACTERS.SONIC
 					Global.PlayerChar2 = Global.CHARACTERS.TAILS
+					#discord_sdk.small_image = "charhead-sonic"
 				1: # Sonic
 					Global.PlayerChar1 = Global.CHARACTERS.SONIC
+					#discord_sdk.small_image = "charhead-sonic"
 				2: # Tails
 					Global.PlayerChar1 = Global.CHARACTERS.TAILS
+					#discord_sdk.small_image = "charhead-tails"
 				3: # Knuckles
 					Global.PlayerChar1 = Global.CHARACTERS.KNUCKLES
+					#discord_sdk.small_image = "charhead-knuckles"
 				4: # Amy
 					Global.PlayerChar1 = Global.CHARACTERS.AMY
+					#discord_sdk.small_image = "charhead-amy"
+				5: # Xander
+					Global.PlayerChar1 = Global.CHARACTERS.XANDER
+					#discord_sdk.small_image = "charhead-xander"
+			
+			# Update Discord Player Icons
+			#discord_sdk.small_image_text = "Playing as " + characterLabels[characterID]
+			#discord_sdk.refresh()
 					
 			# set the level
 			match(levelID):

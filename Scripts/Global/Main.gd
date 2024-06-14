@@ -29,6 +29,17 @@ func _ready():
 	Global.effectTheme = get_node_or_null("Music/EffectTheme")
 	Global.drowning = get_node_or_null("Music/Drowning")
 	Global.life = get_node_or_null("Music/Life")
+	# discord
+	discord_sdk.details = ""
+	discord_sdk.state = ""
+	discord_sdk.large_image = "special_red"
+	discord_sdk.large_image_text = ""
+	discord_sdk.small_image = ""
+	discord_sdk.small_image_text = ""
+	discord_sdk.start_timestamp = 0
+	discord_sdk.end_timestamp = 0
+	discord_sdk.refresh()
+	print("Discord working: " + str(discord_sdk.get_is_discord_working()))
 	# initialize game data using global reset (it's better then assigning variables twice)
 	Global.reset_values()
 

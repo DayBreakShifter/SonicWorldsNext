@@ -1567,7 +1567,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [7.0, 10.0]
+"values": [10.0, 7.0]
 }
 
 [sub_resource type="Animation" id="Animation_ofgkx"]
@@ -1583,7 +1583,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [3.0, 1.0]
+"values": [5.0, 1.0]
 }
 
 [sub_resource type="Animation" id="Animation_ycyxj"]
@@ -1625,6 +1625,7 @@ texture = ExtResource("2")
 offset = Vector2(0, -4)
 hframes = 16
 vframes = 18
+frame = 113
 script = ExtResource("5")
 
 [node name="DashDust" type="AnimatedSprite2D" parent="Sprite2D"]

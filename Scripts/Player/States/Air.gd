@@ -26,7 +26,7 @@ func _process(_delta):
 		# Shield actions
 		elif ((parent.inputs[parent.INPUTS.ACTION] == 1 or parent.inputs[parent.INPUTS.ACTION2] == 1 or parent.inputs[parent.INPUTS.ACTION3] == 1) and !parent.abilityUsed and isJump):
 			# Super actions
-			if parent.isSuper and (parent.character == parent.CHARACTERS.SONIC or parent.character == parent.CHARACTERS.AMY):
+			if parent.isSuper and (parent.character == parent.CHARACTERS.SONIC): #or parent.character == parent.CHARACTERS.AMY):
 				parent.abilityUsed = true # has to be set to true for drop dash (Sonic and amy only)
 			# Normal actions
 			else:
@@ -113,10 +113,54 @@ func _process(_delta):
 					parent.CHARACTERS.AMY:
 						# set ability used to true to prevent multiple uses
 						parent.abilityUsed = true
+						# double jump from Sonic Superstars
+						if parent.shield > parent.SHIELDS.NORMAL:
+							match (parent.shield):
+								# elec shield action
+								parent.SHIELDS.ELEC:
+									parent.movement.y = -5.5*60.0
+									parent.sfx[13].play()
+									# generate 4 electric particles and send them out diagonally (rotated for each iteration of i to 4)
+									for i in range(4):
+										var part = elecPart.instantiate()
+										part.global_position = parent.global_position
+										part.direction = Vector2(1,1).rotated(deg_to_rad(90*i))
+										parent.get_parent().add_child(part)
+								parent.SHIELDS.FIRE:
+									if !(parent.inputs[parent.INPUTS.YINPUT] < 0 and parent.partner != null):
+										parent.sfx[14].play()
+										parent.movement = Vector2(8*60*parent.direction,-5.5*30.0)
+										parent.shieldSprite.play("FireAction")
+										# set timer for animation related resets
+										var getTimer = parent.shieldSprite.get_node_or_null("ShieldTimer")
+										# Start fire dash timer
+										if getTimer != null:
+											getTimer.start(0.5)
+										# change orientation to match the movement
+										parent.shieldSprite.flip_h = (parent.direction < 0)
+										# lock camera for a short time
+										parent.lock_camera(16.0/60.0)
+								parent.SHIELDS.BUBBLE:
+									if parent.shieldSprite.animation != "BubbleBounce":
+										parent.sfx[15].play()
+										# set movement and bounce reaction
+										parent.movement = Vector2(0,8*60)
+										parent.bounceReaction = 7.5
+										parent.shieldSprite.play("BubbleAction")
+										# set timer for animation related resets
+										var getTimer = parent.shieldSprite.get_node_or_null("ShieldTimer")
+										# Start bubble timer
+										if getTimer != null:
+											getTimer.start(0.25)
+									else:
+										parent.abilityUsed = false
+						# Otherwise
+						else:
+							parent.movement.y = -5.5*45.0
+							# play hammer sound
+							parent.sfx[30].play()
 						# enable insta shield hitbox if hammer drop dashing
 						parent.shieldSprite.get_node("InstaShieldHitbox/HitBox").disabled = (parent.animator.current_animation == "dropDash")
-						# play hammer sound
-						parent.sfx[30].play()
 						# play dropDash sound
 						parent.animator.play("dropDash")
 						
